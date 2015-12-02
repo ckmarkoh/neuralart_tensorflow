@@ -18,7 +18,7 @@ CONTENT_LAYERS =[('conv4_2',1.)]
 STYLE_LAYERS=[('conv1_1',1.),('conv2_1',1.5),('conv3_1',2.),('conv4_1',2.5),('conv5_1',3.)]
 
 
-MEAN_VALUES = np.array([104, 117, 123]).reshape((1,1,1,3))
+MEAN_VALUES = np.array([123, 117, 104]).reshape((1,1,1,3))
 
 def build_net(ntype, nin, nwb=None):
   if ntype == 'conv':
@@ -92,14 +92,11 @@ def build_style_loss(a, x):
 def read_image(path):
   image = scipy.misc.imread(path)
   image = image[np.newaxis,:IMAGE_H,:IMAGE_W,:] 
-  image = image[:,:,:,::-1] 
   image = image - MEAN_VALUES
   return image
 
 def write_image(path, image):
   image = image + MEAN_VALUES
-  image = image[:,:,:,::-1]
-  image = image 
   image = image[0]
   image = np.clip(image, 0, 255).astype('uint8')
   scipy.misc.imsave(path, image)
@@ -141,11 +138,8 @@ def main():
       result_img = sess.run(net['input'])
       print sess.run(cost_total)
       write_image('./results/result_%s.png'%(str(i).zfill(4)),result_img)
-    
   
   write_image(OUTPUT_IMG,result_img)
-  
-
   
 
 if __name__ == '__main__':
