@@ -9,10 +9,12 @@ IMAGE_W = 800
 IMAGE_H = 600 
 CONTENT_IMG =  './images/Taipei101.jpg'
 STYLE_IMG = './images/StarryNight.jpg'
-OUTPUT_IMG = './results/results.png'
+OUTOUT_DIR = './results'
+OUTPUT_IMG = 'results.png'
+VGG_MODEL = 'imagenet-vgg-verydeep-19.mat'
 INI_NOISE_RATIO = 0.7
 STYLE_STRENGTH = 500
-ITERATION = 2500
+ITERATION = 5000
 
 CONTENT_LAYERS =[('conv4_2',1.)]
 STYLE_LAYERS=[('conv1_1',1.),('conv2_1',1.5),('conv3_1',2.),('conv4_1',2.5),('conv5_1',3.)]
@@ -103,16 +105,12 @@ def write_image(path, image):
 
 
 def main():
-  if not os.path.exists('./results'):
-      os.mkdir('./results')
-  net = build_vgg19('imagenet-vgg-verydeep-19.mat')
+  net = build_vgg19(VGG_MODEL)
   sess = tf.Session()
   sess.run(tf.initialize_all_variables())
   noise_img = np.random.uniform(-20, 20, (1, IMAGE_H, IMAGE_W, 3)).astype('float32')
   content_img = read_image(CONTENT_IMG)
   style_img = read_image(STYLE_IMG)
-  write_image('./results/content.png',content_img)
-  write_image('./results/style.png',style_img)
 
   sess.run([net['input'].assign(content_img)])
   cost_content = sum(map(lambda l,: l[1]*build_content_loss(sess.run(net[l[0]]) ,  net[l[0]])
@@ -122,7 +120,6 @@ def main():
   cost_style = sum(map(lambda l: l[1]*build_style_loss(sess.run(net[l[0]]) ,  net[l[0]])
     , STYLE_LAYERS))
 
-
   cost_total = cost_content + STYLE_STRENGTH * cost_style
   optimizer = tf.train.AdamOptimizer(2.0)
 
@@ -130,16 +127,17 @@ def main():
   sess.run(tf.initialize_all_variables())
   sess.run(net['input'].assign( INI_NOISE_RATIO* noise_img + (1.-INI_NOISE_RATIO) * content_img))
 
-
+  if not os.path.exists(OUTOUT_DIR):
+      os.mkdir(OUTOUT_DIR)
 
   for i in range(ITERATION):
     sess.run(train)
     if i%100 ==0:
       result_img = sess.run(net['input'])
       print sess.run(cost_total)
-      write_image('./results/result_%s.png'%(str(i).zfill(4)),result_img)
+      write_image(os.path.join(OUTOUT_DIR,'%s.png'%(str(i).zfill(4))),result_img)
   
-  write_image(OUTPUT_IMG,result_img)
+  write_image(os.path.join(OUTOUT_DIR,OUTPUT_IMG),result_img)
   
 
 if __name__ == '__main__':
