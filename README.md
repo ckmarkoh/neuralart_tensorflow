@@ -4,8 +4,7 @@ Implementation of [A Neural Algorithm of Artistic Style](http://arxiv.org/abs/15
 
 ### Requirements
  - [Tensorflow](http://www.tensorflow.org/)
- - [VGG 19 model](http://www.vlfeat.org/matconvnet/pretrained), please choose *imagenet-vgg-verydeep-19*.
-
+ - [VGG 19 model](https://drive.google.com/file/d/0B8QJdgMvQDrVU2cyZjFKU1RrLUU/view?usp=sharing)
 
 ### Examples
 
