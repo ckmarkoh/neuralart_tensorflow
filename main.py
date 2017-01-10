@@ -17,7 +17,7 @@ STYLE_STRENGTH = 500
 ITERATION = 5000
 
 CONTENT_LAYERS =[('conv4_2',1.)]
-STYLE_LAYERS=[('conv1_1',1.),('conv2_1',1.5),('conv3_1',2.),('conv4_1',2.5),('conv5_1',3.)]
+STYLE_LAYERS=[('conv1_1',1.),('conv2_1',1.),('conv3_1',1.),('conv4_1',1.),('conv5_1',1.)]
 
 
 MEAN_VALUES = np.array([123, 117, 104]).reshape((1,1,1,3))
