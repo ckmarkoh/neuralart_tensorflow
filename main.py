@@ -93,7 +93,8 @@ def build_style_loss(a, x):
 
 def read_image(path):
   image = scipy.misc.imread(path)
-  image = image[np.newaxis,:IMAGE_H,:IMAGE_W,:] 
+  image = scipy.misc.imresize(image,(IMAGE_H,IMAGE_W))
+  image = image[np.newaxis,:,:,:] 
   image = image - MEAN_VALUES
   return image
 
